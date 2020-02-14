@@ -145,7 +145,7 @@ for ((startX, startY, endX, endY), text) in results:
 	# display the text OCR'd by Tesseract
 	print("OCR TEXT")
 	print("========")
-	print("{}n".format(text))
+	print("{}\n".format(text))
 	# strip out non-ASCII text so we can draw the text on the image
 	# using OpenCV, then draw the text and a bounding box surrounding
 	# the text region of the input image
