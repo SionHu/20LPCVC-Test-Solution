@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Apple auto-generated shit
+.DS_Store
+
+# My virtualenv
+mysol
