@@ -111,6 +111,7 @@ if not args.get("video", False):
 # otherwise, grab a reference to the video file
 else:
     vs = cv2.VideoCapture(args["video"])
+    # vs.set(cv2.CAP_PROP_FPS, 20)
 
 # start the FPS throughput estimator
 fps = FPS().start()
@@ -159,8 +160,7 @@ while True:
     f_results = []
     # loop over the bounding boxes
     for (startX, startY, endX, endY) in boxes:
-        # scale the bounding box coordinates based on the respective
-        # ratios
+        # scale the bounding box coordinates based on the respective ratios
         startX = int(startX * rW)
         startY = int(startY * rH)
         endX = int(endX * rW)
@@ -174,8 +174,8 @@ while True:
         # apply padding to each side of the bounding box, respectively
         # startX = max(0, startX - dX)
         # startY = max(0, startY - dY)
-        # endX = min(origW, endX + (dX * 2))
-        # endY = min(origH, endY + (dY * 2))
+        # endX = min(endX, endX + (dX * 2))
+        # endY = min(endY, endY + (dY * 2))
 
         # extract the actual padded ROI
         roi = orig[startY:endY, startX:endX]
