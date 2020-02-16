@@ -155,6 +155,9 @@ while True:
     # suppress weak, overlapping bounding boxes
     (rects, confidences) = decode_predictions(scores, geometry)
     boxes = non_max_suppression(np.array(rects), probs=confidences)
+    # if no text is detected, skip this frame 
+    if len(confidences) == 0:
+        pass
 
     # store all captured text in current frame
     f_results = []
