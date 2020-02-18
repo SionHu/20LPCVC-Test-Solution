@@ -11,6 +11,7 @@ import pytesseract
 import imutils
 import time
 import cv2
+import os
 
 def decode_predictions(scores, geometry):
     # grab the number of rows and columns from the scores volume, then
@@ -155,7 +156,7 @@ while True:
     # suppress weak, overlapping bounding boxes
     (rects, confidences) = decode_predictions(scores, geometry)
     boxes = non_max_suppression(np.array(rects), probs=confidences)
-    # if no text is detected, skip this frame 
+    # if no text is detected, skip this frame
     if len(confidences) == 0:
         pass
 
@@ -214,12 +215,13 @@ while True:
     # f_results = sorted(f_results, key=lambda r:r[0][1])
 
     # show the output frame
-    cv2.imshow("Text Detection", orig)
-    key = cv2.waitKey(1) & 0xFF
+    if os.uname()[0] != "Linux":
+        cv2.imshow("Text Detection", orig)
+        key = cv2.waitKey(1) & 0xFF
 
-    # if the `q` key was pressed, break from the loop
-    if key == ord("q"):
-        break
+        # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
 
 # stop the timer and display FPS information
 fps.stop()
