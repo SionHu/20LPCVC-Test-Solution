@@ -27,7 +27,7 @@ def decode_predictions(scores, geometry):
 		for x in range(0, numCols):
 			# if our score does not have sufficient probability,
 			# ignore it
-			if scoresData[x] < args["min_confidence"]:.
+			if scoresData[x] < args["min_confidence"]:
 				continue
 			# compute the offset factor as our resulting feature
 			# maps will be 4x smaller than the input image
