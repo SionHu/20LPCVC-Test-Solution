@@ -12,6 +12,7 @@ import imutils
 import time
 import cv2
 import os
+import collections
 
 def decode_predictions(scores, geometry):
     # grab the number of rows and columns from the scores volume, then
@@ -84,6 +85,12 @@ ap.add_argument("-e", "--height", type=int, default=320,
                 help="resized image height (should be multiple of 32)")
 ap.add_argument("-p", "--padding", type=float, default=0.0,
                 help="amount of padding to add to each border of ROI")
+# following arguments will be used for testing, will be required
+ap.add_argument("-i", "--input", type=str, required=False,
+                help="path of input file that contains the testing questions")
+ap.add_argument("-o", "--output", type=str, required=False,
+                help="path of output file that stores the final results")
+
 args = vars(ap.parse_args())
 
 # initialize the original frame dimensions, new frame dimensions,
@@ -112,13 +119,20 @@ if not args.get("video", False):
 # otherwise, grab a reference to the video file
 else:
     vs = cv2.VideoCapture(args["video"])
-    # vs.set(cv2.CAP_PROP_FPS, 20)
+    # vs.set(cv2.CAP_PROP_FPS, 20) # ain't working :(
+
+dict = collections.defaultdict(set) # the final output dictionary
+with open(args["input"]) as file:
+    line = file.readline()
+    for key in line.split(';')[:-1]: # get rid of '\n' somehow stored in the file
+        dict[key] = set()
+
+# show all results
+results = collections.defaultdict(list)
+counter = 0
 
 # start the FPS throughput estimator
 fps = FPS().start()
-
-# store all captured distinct text
-results = []
 
 # loop over frames from the video stream
 while True:
@@ -199,14 +213,16 @@ while True:
         # add the bounding box coordinates and OCR'd text to the list
         # of f_results
         # f_results.append(((startX, startY, endX, endY), text))
-        results.append(text)
+        # results.append(text)
+        f_results.append(text)
 
         # draw the bounding box on the frame
         cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
 
+    results[counter] = f_results
     print("Current frame:")
     print("========")
-    print("{}\n".format(results))
+    print("{}\n".format(f_results))
 
     # update the FPS counter
     fps.update()
@@ -214,7 +230,7 @@ while True:
     # sort the f_results bounding box coordinates from top to bottom
     # f_results = sorted(f_results, key=lambda r:r[0][1])
 
-    # show the output frame
+    # show the output frame except on Pi
     if os.uname()[0] != "Linux":
         cv2.imshow("Text Detection", orig)
         key = cv2.waitKey(1) & 0xFF
@@ -223,11 +239,27 @@ while True:
         if key == ord("q"):
             break
 
+    counter += 1 # end of while
+
+def surroundings(text, list1, list2):
+    new_l1 = [i for i in list1 if i != text]
+    new_l2 = [i for i in list2 if i != text]
+    return set(new_l1+new_l2)
+
+# form the dictionary
+for f_i in range(len(results)):
+    for text in results[f_i]:
+        if text in dict: # find the frame results that key
+            ori_val = dict.get(text)
+            print("original value",ori_val)
+            dict[text] = ori_val | surroundings(text, results[f_i], results[f_i+1])
+            f_i+1
+
 # stop the timer and display FPS information
 fps.stop()
 print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
 print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-
+print("[INFO] final results: {}".format(dict.items()))
 # if we are using a webcam, release the pointer
 if not args.get("video", False):
     vs.stop()
