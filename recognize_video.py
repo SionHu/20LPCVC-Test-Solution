@@ -242,9 +242,7 @@ while True:
     counter += 1 # end of while
 
 def surroundings(text, list1, list2):
-    new_l1 = [i for i in list1 if i != text]
-    new_l2 = [i for i in list2 if i != text]
-    return set(new_l1+new_l2)
+    return (set(list1)| set(list2))-{text}
 
 # form the dictionary
 for f_i in range(len(results)):
