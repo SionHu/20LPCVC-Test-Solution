@@ -249,9 +249,24 @@ for f_i in range(len(results)):
     for text in results[f_i]:
         if text in dict: # find the frame results that key
             ori_val = dict.get(text)
-            print("original value",ori_val)
+            # print("original value",ori_val)
             dict[text] = ori_val | surroundings(text, results[f_i], results[f_i+1])
             f_i+1
+
+f = open("output.txt","w+")
+out_line = ''
+for item in dict.items(): # each item has one key and multiple answers
+    out_key = ''
+    for t in item:
+        if isinstance(t, str): # this is the key
+            out_key += '{}:'.format(t)
+        else:
+            for word in t: out_key += '{} '.format(word)
+    out_line += '{}; '.format(out_key)
+print("Ouput line:", out_line)
+
+# f.write(out_line)
+f.close()
 
 # stop the timer and display FPS information
 fps.stop()
