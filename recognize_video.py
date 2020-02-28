@@ -263,9 +263,9 @@ for item in dict.items(): # each item has one key and multiple answers
         else:
             for word in t: out_key += '{} '.format(word)
     out_line += '{}; '.format(out_key)
-print("Ouput line:", out_line)
+# print("Ouput line:", out_line)
 
-# f.write(out_line)
+f.write(out_line)
 f.close()
 
 # stop the timer and display FPS information
