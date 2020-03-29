@@ -1,1 +1,1 @@
-EXIT:STAIR 1 STAR 1 ; GTR:Bort 1 Skyline R34 a ; 
+EXIT:STAR 1 STAIR 1 ; GTR:a 1 Skyline R34 Bort ; 

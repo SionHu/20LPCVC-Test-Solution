@@ -217,7 +217,7 @@ while True:
         f_results.append(text)
 
         # draw the bounding box on the frame
-        cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
+        # cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
 
     results[counter] = f_results
     print("Current frame:")
@@ -231,13 +231,13 @@ while True:
     # f_results = sorted(f_results, key=lambda r:r[0][1])
 
     # show the output frame except on Pi
-    if os.uname()[0] != "Linux":
-        cv2.imshow("Text Detection", orig)
-        key = cv2.waitKey(1) & 0xFF
-
-        # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
+    # if os.uname()[0] != "Linux":
+    #     cv2.imshow("Text Detection", orig)
+    #     key = cv2.waitKey(1) & 0xFF
+    #
+    #     # if the `q` key was pressed, break from the loop
+    #     if key == ord("q"):
+    #         break
 
     counter += 1 # end of while
 
@@ -253,7 +253,7 @@ for f_i in range(len(results)):
             dict[text] = ori_val | surroundings(text, results[f_i], results[f_i+1])
             f_i+1
 
-f = open("output.txt","w+")
+f = open("answer.txt","w+")
 out_line = ''
 for item in dict.items(): # each item has one key and multiple answers
     out_key = ''
